@@ -2,12 +2,12 @@
 
 /**
  * @ngdoc module
- * @name angular-bootstrap-select.extra
+ * @name ng-bootstrap-select.extra
  * @description
- * Angular bootstrap-select extra.
+ * ng-bootstrap-select extra.
  */
 
-angular.module('angular-bootstrap-select.extra', [])
+angular.module('ng-bootstrap-select.extra', [])
   .directive('dropdownToggle', [dropdownToggleDirective])
   .directive('dropdownClose', [dropdownCloseDirective]);
 
@@ -137,12 +137,12 @@ function dropdownCloseDirective() {
 
 /**
  * @ngdoc module
- * @name angular-bootstrap-select
+ * @name ng-bootstrap-select
  * @description
- * Angular bootstrap-select.
+ * ng-bootstrap-select.
  */
 
-angular.module('angular-bootstrap-select', [])
+angular.module('ng-bootstrap-select', [])
   .directive('selectpicker', ['$parse', '$timeout', selectpickerDirective]);
 
 /**
