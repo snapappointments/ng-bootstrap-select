@@ -209,6 +209,10 @@ function selectpickerDirective($parse, $timeout) {
         scope.$watch(attrs.ngModel, refresh, true);
       }
 
+      if (attrs.ngOptions && / in /.test(attrs.ngOptions)) {
+        scope.$watch(attrs.ngOptions.replace('::', '').split(' in ')[1].split(' ')[0], refresh, true);
+      }
+
       if (attrs.ngDisabled) {
         scope.$watch(attrs.ngDisabled, refresh, true);
       }
