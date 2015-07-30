@@ -180,6 +180,11 @@ function selectpickerDirective($parse, $timeout) {
     priority: 1000,
     link: function (scope, element, attrs) {
       function refresh(newVal) {
+        // update model if select is within child scope (e.g. inside ng-if)
+        if (scope.$parent[attrs.ngModel] !== undefined && scope.$parent[attrs.ngModel] !== newVal) {
+          scope.$parent[attrs.ngModel] = newVal;
+        }
+
         scope.$applyAsync(function () {
           if (attrs.ngOptions && /track by/.test(attrs.ngOptions)) element.val(newVal);
           element.selectpicker('refresh');
