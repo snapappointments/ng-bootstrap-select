@@ -9,6 +9,11 @@ module.exports = function (grunt) {
   grunt.initConfig({
     readme: 'README.md',
     pkg: grunt.file.readJSON('package.json'),
+    banner: '/*!\n' +
+            ' * ng-bootstrap-select v<%= pkg.version %>\n' +
+            ' *\n' +
+            ' * Licensed under <%= pkg.license %>\n' +
+            ' */\n',
     karma: {
       options: {
         configFile: 'test/karma.conf.js'
