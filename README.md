@@ -2,7 +2,7 @@ ng-bootstrap-select
 ========================
 
 [![Latest release](https://img.shields.io/github/release/caseyjhol/ng-bootstrap-select.svg?style=flat)](https://github.com/caseyjhol/ng-bootstrap-select/releases/latest)
-[![Bower](https://img.shields.io/bower/v/bootstrap-select.svg)]()
+[![Bower](https://img.shields.io/bower/v/ng-bootstrap-select.svg)]()
 
 This is a fork of [angular-bootstrap-select](https://github.com/joaoneto/angular-bootstrap-select) by [João Neto](https://github.com/joaoneto).
 
