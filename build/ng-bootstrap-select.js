@@ -1,3 +1,9 @@
+/*!
+ * ng-bootstrap-select v0.1.0
+ *
+ * Licensed under MIT
+ */
+
 'use strict';
 
 /**

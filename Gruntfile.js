@@ -4,6 +4,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
+  grunt.loadNpmTasks('grunt-banner');
   grunt.loadNpmTasks('grunt-contrib-uglify');
 
   grunt.initConfig({
@@ -55,9 +56,20 @@ module.exports = function (grunt) {
         src: ['build']
       }
     },
+    usebanner: {
+      js: {
+        options: {
+          banner: '<%= banner %>'
+        },
+        src: [
+          'build/<%= pkg.name %>.js',
+          'build/<%= pkg.name %>.min.js'
+        ]
+      }
+    },
   });
 
   grunt.registerTask('test', ['karma:' + env]);
-  grunt.registerTask('build', ['clean:build', 'uglify', 'copy:build']);
+  grunt.registerTask('build', ['clean:build', 'uglify', 'copy:build', 'usebanner:js']);
   grunt.registerTask('default', ['test']);
 };
