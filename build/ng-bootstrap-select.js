@@ -1,5 +1,5 @@
 /*!
- * ng-bootstrap-select v0.1.0
+ * ng-bootstrap-select v0.1.1
  *
  * Licensed under MIT
  */
@@ -192,7 +192,6 @@ function selectpickerDirective($parse, $timeout) {
         }
 
         scope.$applyAsync(function () {
-          if (attrs.ngOptions && /track by/.test(attrs.ngOptions)) element.val(newVal);
           element.selectpicker('refresh');
         });
       }
