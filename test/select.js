@@ -1,5 +1,5 @@
 describe('selectpicker', function() {
-  beforeEach(module('angular-bootstrap-select'));
+  beforeEach(module('ng-bootstrap-select'));
 
   it('should set to scope the first selectpicker element value', function() {
     return inject(function ($compile, $rootScope) {

@@ -1,7 +1,7 @@
-angular-bootstrap-select
+ng-bootstrap-select
 ========================
 
-Directive to wrap [bootstrap-select](http://silviomoreto.github.io/bootstrap-select/). This directive aims to proxy the behavior of the plugin bootstrap-select, in the AngularJS style, see the documentation on the [plugin page](http://silviomoreto.github.io/bootstrap-select/).
+Directive to wrap [bootstrap-select](http://silviomoreto.github.io/bootstrap-select/). This directive aims to proxy the behavior of the plugin bootstrap-select, in the AngularJS style. See the documentation on the [plugin page](http://silviomoreto.github.io/bootstrap-select/). This is a fork of [angular-bootstrap-select](https://github.com/joaoneto/angular-bootstrap-select) by [João Neto](https://github.com/joaoneto).
 
 ## Requirements
 - ([jQuery](http://jquery.com/))
@@ -10,7 +10,7 @@ Directive to wrap [bootstrap-select](http://silviomoreto.github.io/bootstrap-sel
 
 ## Install
 ```bash
-$ bower install angular-bootstrap-select
+$ bower install ng-bootstrap-select
 ```
 
 ## Examples
@@ -21,7 +21,7 @@ $ bower install angular-bootstrap-select
 ### Html snippet
 
 ```html
-<script src="../bower_components/angular-bootstrap-select/build/angular-bootstrap-select.min.js"></script>
+<script src="../bower_components/ng-bootstrap-select/build/ng-bootstrap-select.min.js"></script>
 
 <select class="selectpicker">
   <option>Mustard</option>

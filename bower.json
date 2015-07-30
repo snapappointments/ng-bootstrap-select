@@ -1,10 +1,10 @@
 {
-  "name": "angular-bootstrap-select",
+  "name": "ng-bootstrap-select",
   "version": "0.1.0-rc2",
-  "main": "./build/angular-bootstrap-select.js",
+  "main": "./build/ng-bootstrap-select.js",
   "description": "Directive to wrap bootstrap-select",
-  "author": "https://github.com/joaoneto/angular-bootstrap-select/graphs/contributors",
-  "homepage": "http://joaoneto.github.io/angular-bootstrap-select/",
+  "authors": "https://github.com/caseyjhol/ng-bootstrap-select/graphs/contributors",
+  "homepage": "http://caseyjhol.github.io/ng-bootstrap-select/",
   "license": "MIT",
   "ignore": [
     "**/.*",

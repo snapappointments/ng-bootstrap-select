@@ -1,5 +1,5 @@
 {
-  "name": "angular-bootstrap-select",
+  "name": "ng-bootstrap-select",
   "version": "0.1.0-rc2",
   "description": "Directive to wrap bootstrap-select",
   "devDependencies": {
@@ -25,6 +25,16 @@
     "select",
     "directive"
   ],
-  "author": "João Pinto Neto",
+  "author": "Casey Holzer",
+  "contributors": [
+    {
+      "name": "Casey Holzer",
+      "url": "https://github.com/caseyjhol"
+    },
+    {
+      "name": "João Neto",
+      "url": "https://github.com/joaoneto"
+    }
+  ],
   "license": "MIT"
 }

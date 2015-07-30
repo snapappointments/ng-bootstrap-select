@@ -10,25 +10,25 @@
 {% if doc.name != 'ng' and doc.name != 'auto' %}
   <h2>Installation</h2>
 
-  <p>First include <code>angular-bootstrap-select</code> in your HTML:</p>
+  <p>First include <code>ng-bootstrap-select</code> in your HTML:</p>
 
   {% code %}
       <script src="angular.js">
-      <script src="angular-bootstrap-select.js">
+      <script src="ng-bootstrap-select.js">
   {% endcode %}
 
   <p>You can download this file from the following places:</p>
   <ul>
     <li>
-      <a href="https://github.com/joaoneto/angular-bootstrap-select/releases">Github</a><br>
-      e.g. {$ ("https://github.com/joaoneto/angular-bootstrap-select/archive/vX.Y.Z.zip") | code $}
+      <a href="https://github.com/caseyjhol/ng-bootstrap-select/releases">Github</a><br>
+      e.g. {$ ("https://github.com/caseyjhol/ng-bootstrap-select/archive/vX.Y.Z.zip") | code $}
     </li>
     <li>
       <a href="http://bower.io">Bower</a><br>
-      e.g. <code>bower install angular-bootstrap-select@X.Y.Z</code>
+      e.g. <code>bower install ng-bootstrap-select@X.Y.Z</code>
     </li>
   </ul>
-  <p>where X.Y.Z is the angular-bootstrap-select.js version you are running.</p>
+  <p>where X.Y.Z is the ng-bootstrap-select.js version you are running.</p>
   <p>Then load the module in your application by adding it as a dependent module:</p>
   {% code %}
     angular.module('app', ['{$ doc.name $}']);

@@ -11,7 +11,7 @@ var files = {
   exclude_scripts: '',
 };
 
-module.exports = new Package('angular-bootstrap-select', [
+module.exports = new Package('ng-bootstrap-select', [
   require('dgeni-packages/ngdoc'),
   require('dgeni-packages/nunjucks'),
 ])
@@ -25,8 +25,8 @@ module.exports = new Package('angular-bootstrap-select', [
     },
     versions: ['v0.0.2', 'v0.0.3', 'v0.0.4'],
     info: {
-      owner: 'joaoneto',
-      repo: 'angular-bootstrap-select',
+      owner: 'caseyjhol',
+      repo: 'ng-bootstrap-select',
     }
   };
 })

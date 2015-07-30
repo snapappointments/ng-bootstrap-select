@@ -8,7 +8,7 @@ files = [
   'bower_components/angular/angular.js',
   'bower_components/bootstrap-select/dist/js/bootstrap-select.js',
   'bower_components/angular-mocks/angular-mocks.js',
-  'src/angular-bootstrap-select.js',
+  'src/ng-bootstrap-select.js',
   'test/select.js',
 ];
 browsers = ['Chrome'];
