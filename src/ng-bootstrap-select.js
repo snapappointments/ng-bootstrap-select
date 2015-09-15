@@ -179,14 +179,27 @@ function selectpickerDirective($parse, $timeout) {
     restrict: 'A',
     priority: 1000,
     link: function (scope, element, attrs) {
+      // fall back to $evalAsync if using AngularJS v1.2.x
+      var $async = scope.$applyAsync ? '$applyAsync' : '$evalAsync';
+
       function refresh(newVal) {
+        scope[$async](function () {
+          element.selectpicker('refresh');
+        });
+      }
+
+      function render(newVal) {
         // update model if select is within child scope (e.g. inside ng-if)
         if (scope.$parent[attrs.ngModel] !== undefined && scope.$parent[attrs.ngModel] !== newVal) {
           scope.$parent[attrs.ngModel] = newVal;
         }
+        
+        if (scope.$$childHead && scope.$$childHead[attrs.ngModel]) {
+          scope.$$childHead[attrs.ngModel] = newVal;
+        }
 
-        scope.$applyAsync(function () {
-          element.selectpicker('refresh');
+        scope[$async](function () {
+          element.selectpicker('render');
         });
       }
 
@@ -204,12 +217,18 @@ function selectpickerDirective($parse, $timeout) {
         element.selectpicker('refresh');
       });
 
-      if (attrs.ngModel) {
-        scope.$watch(attrs.ngModel, refresh, true);
-      }
-
       if (attrs.ngOptions && / in /.test(attrs.ngOptions)) {
         scope.$watch(attrs.ngOptions.replace('::', '').split(' in ')[1].split(' ')[0], refresh, true);
+      }
+
+      if (attrs.ngModel) {
+        scope.$watch(attrs.ngModel, function(newVal, oldVal) {
+          if (!oldVal) {
+            return refresh(newVal);
+          } else if (newVal !== oldVal) {
+            return render(newVal);
+          }
+        }, true);
       }
 
       if (attrs.ngDisabled) {
