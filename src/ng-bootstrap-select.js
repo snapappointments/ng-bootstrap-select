@@ -270,7 +270,7 @@ function selectpickerDirective($parse, $timeout) {
         });
       });
 
-      $timeout(function () {
+      scope[$async](function () {
         element.selectpicker($parse(attrs.selectpicker)());
         element.selectpicker('refresh');
       });
