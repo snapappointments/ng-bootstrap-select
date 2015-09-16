@@ -284,8 +284,8 @@ function selectpickerDirective($parse, $timeout) {
         scope.$watch(collection, refresh, true);
       }
 
-      if (attr.ngModel) {
-        scope.$watch(attr.ngModel, function(newVal, oldVal) {
+      if (attrs.ngModel) {
+        scope.$watch(attrs.ngModel, function(newVal, oldVal) {
           if (newVal !== oldVal) {
             if (!oldVal) {
               return refresh(newVal);
