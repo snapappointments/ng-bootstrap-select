@@ -179,11 +179,69 @@ function selectpickerDirective($parse, $timeout) {
     restrict: 'A',
     priority: 1000,
     link: function (scope, element, attrs) {
-      // fall back to $evalAsync if using AngularJS v1.2.x
-      var $async = scope.$applyAsync ? '$applyAsync' : '$evalAsync';
+      var $async = scope.$applyAsync ? '$applyAsync' : '$evalAsync', // fall back to $evalAsync if using AngularJS v1.2.x
+          NG_OPTIONS_REGEXP = /^\s*([\s\S]+?)(?:\s+as\s+([\s\S]+?))?(?:\s+group\s+by\s+([\s\S]+?))?\s+for\s+(?:([\$\w][\$\w]*)|(?:\(\s*([\$\w][\$\w]*)\s*,\s*([\$\w][\$\w]*)\s*\)))\s+in\s+([\s\S]+?)(?:\s+track\s+by\s+([\s\S]+?))?$/,
+          multiple = attrs.multiple,
+          optionsExp = attrs.ngOptions,
+          optionAttrs = $parse(attrs.bsOptionAttrs)(),
+          nullOption,
+          match = optionsExp.match(NG_OPTIONS_REGEXP),
+          displayFn = $parse(match[2] || match[1]),
+          valueName = match[4] || match[6],
+          keyName = match[5],
+          collection = match[7],
+          valuesFn = $parse(collection);
+
+      function setAttributes() {
+        if ($.isEmptyObject(optionAttrs)) return;
+
+        nullOption = false;
+
+        // find "null" option
+        for (var i = 0, children = element.find('option'), ii = children.length; i < ii; i++) {
+          if (children[i].value === '') {
+            nullOption = children.eq(i);
+            break;
+          }
+        }
+            
+        var values = valuesFn(scope) || [],
+            keys = angular.copy(keyName ? sortedKeys(values) : values);
+            
+        if (!multiple && nullOption) {
+          // insert null option if we have a placeholder, or the model is null
+          keys.unshift(null);
+        }
+        
+        element.find('option').each(function(i) {
+          var locals = {},
+              newAttrs = {},
+              newData = {};
+          
+          if (keys[i]) {
+            
+            locals[valueName] = keys[i];
+            
+            for (var optionAttr in optionAttrs) {
+              var attr = optionAttrs[optionAttr],
+                  dataAttr = optionAttr.split('data-')[1] ? optionAttr.split('data-')[1].replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); }) : null, // convert to camelCase
+                  parseAttr = $parse(attr)(scope, locals);
+              
+              if (dataAttr) {  
+                newData[dataAttr] = parseAttr || attr;
+              } else {
+                newAttrs[optionAttr] = parseAttr || attr;
+              }
+            }
+
+            $(this).data(newData).attr(newAttrs);
+          }
+        });
+      }
 
       function refresh(newVal) {
         scope[$async](function () {
+          if (attrs.bsOptionAttrs) setAttributes();
           element.selectpicker('refresh');
         });
       }
@@ -217,17 +275,17 @@ function selectpickerDirective($parse, $timeout) {
         element.selectpicker('refresh');
       });
 
-      if (attrs.ngOptions && / in /.test(attrs.ngOptions)) {
-        scope.$watch(attrs.ngOptions.replace('::', '').split(' in ')[1].split(' ')[0], refresh, true);
+      if (optionsExp) {
+        scope.$watch(collection, refresh, true);
       }
 
       if (attr.ngModel) {
         scope.$watch(attr.ngModel, function(newVal, oldVal) {
           if (newVal !== oldVal) {
             if (!oldVal) {
-              return refresh(newVal, oldVal);
+              return refresh(newVal);
             } else {
-              return render(newVal, oldVal);
+              return render(newVal);
             }
           }
         }, true);
