@@ -221,12 +221,14 @@ function selectpickerDirective($parse, $timeout) {
         scope.$watch(attrs.ngOptions.replace('::', '').split(' in ')[1].split(' ')[0], refresh, true);
       }
 
-      if (attrs.ngModel) {
-        scope.$watch(attrs.ngModel, function(newVal, oldVal) {
-          if (!oldVal) {
-            return refresh(newVal);
-          } else if (newVal !== oldVal) {
-            return render(newVal);
+      if (attr.ngModel) {
+        scope.$watch(attr.ngModel, function(newVal, oldVal) {
+          if (newVal !== oldVal) {
+            if (!oldVal) {
+              return refresh(newVal, oldVal);
+            } else {
+              return render(newVal, oldVal);
+            }
           }
         }, true);
       }
