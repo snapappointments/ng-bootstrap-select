@@ -272,7 +272,6 @@ function selectpickerDirective($parse, $timeout) {
 
       scope[$async](function () {
         element.selectpicker($parse(attrs.selectpicker)());
-        element.selectpicker('refresh');
       });
 
       if (optionsExp) {
