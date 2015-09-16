@@ -1,5 +1,5 @@
 /*!
- * ng-bootstrap-select v0.1.1
+ * ng-bootstrap-select v0.2.0
  *
  * Licensed under MIT
  */
