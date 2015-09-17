@@ -202,6 +202,61 @@ function selectpickerDirective($parse, $timeout) {
           collection = match[7],
           valuesFn = $parse(collection);
 
+      function bindData(text) {
+        var startIndex,
+            endIndex,
+            index = 0,
+            expressions = [],
+            parseFns = [],
+            textLength = text.length,
+            exp,
+            concat = [],
+            startSymbol = '{{',
+            endSymbol = '}}',
+            startSymbolLength = startSymbol.length,
+            endSymbolLength = endSymbol.length,
+            escapedStartRegexp = new RegExp(startSymbol.replace(/./g, escape), 'g'),
+            escapedEndRegexp = new RegExp(endSymbol.replace(/./g, escape), 'g'),
+            expressionPositions = [];
+            
+        function escape(ch) {
+          return '\\\\\\' + ch;
+        }
+      
+        function unescapeText(text) {
+          return text.replace(escapedStartRegexp, startSymbol).
+            replace(escapedEndRegexp, endSymbol);
+        }
+            
+        while (index < textLength) {
+          if (((startIndex = text.indexOf(startSymbol, index)) != -1) &&
+               ((endIndex = text.indexOf(endSymbol, startIndex + startSymbolLength)) != -1)) {
+            if (index !== startIndex) {
+              concat.push(unescapeText(text.substring(index, startIndex)));
+            }
+            exp = text.substring(startIndex + startSymbolLength, endIndex);
+            expressions.push(exp);
+            index = endIndex + endSymbolLength;
+            expressionPositions.push(concat.length);
+            concat.push('');
+          } else {
+            // we did not find an interpolation, so we have to add the remainder to the separators array
+            if (index !== textLength) {
+              concat.push(unescapeText(text.substring(index)));
+            }
+            break;
+          }
+        }
+        
+        return function(context, locals) {
+          for (var i = 0, ii = expressions.length; i < ii; i++) {
+            concat[expressionPositions[i]] = $parse(expressions[i])(context, locals);
+          }
+          
+          return concat.join('');
+        }
+      }
+
       function setAttributes() {
         if ($.isEmptyObject(optionAttrs)) return;
 
@@ -235,7 +290,7 @@ function selectpickerDirective($parse, $timeout) {
             for (var optionAttr in optionAttrs) {
               var attr = optionAttrs[optionAttr],
                   dataAttr = optionAttr.split('data-')[1] ? optionAttr.split('data-')[1].replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); }) : null, // convert to camelCase
-                  parseAttr = $parse(attr)(scope, locals);
+                  parseAttr = bindData(attr)(scope, locals);
               
               if (dataAttr) {  
                 newData[dataAttr] = parseAttr || attr;
