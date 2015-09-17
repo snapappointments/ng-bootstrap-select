@@ -174,6 +174,16 @@ angular.module('ng-bootstrap-select', [])
  * ```
  */
 
+function sortedKeys(obj) {
+  var keys = [];
+  for (var key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      keys.push(key);
+    }
+  }
+  return keys.sort();
+}
+
 function selectpickerDirective($parse, $timeout) {
   return {
     restrict: 'A',
