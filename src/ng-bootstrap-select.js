@@ -123,6 +123,10 @@ function selectpickerDirective($parse, $timeout) {
       }
 
       function setAttributes() {
+        if (typeof optionAttrs === 'object' && $.isEmptyObject(optionAttrs)) return;
+
+        nullOption = false;
+
         var locals = {},
             getLocals = keyName ? function(value, key) {
               locals[keyName] = key;
@@ -132,10 +136,6 @@ function selectpickerDirective($parse, $timeout) {
               locals[valueName] = value;
               return locals;
             };
-
-        if ($.isEmptyObject(optionAttrs)) return;
-
-        nullOption = false;
 
         // find "null" option
         for (var i = 0, children = element.find('option'), ii = children.length; i < ii; i++) {
@@ -164,6 +164,8 @@ function selectpickerDirective($parse, $timeout) {
           
           if (key) {
             var customAttrs = typeof optionAttrs === 'function' ? optionAttrs(key, value) : optionAttrs;
+
+            if ($.isEmptyObject(customAttrs)) return;
 
             for (var optionAttr in customAttrs) {
               var attr = customAttrs[optionAttr],
