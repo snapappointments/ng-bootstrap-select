@@ -58,7 +58,7 @@ function selectpickerDirective($parse, $timeout) {
           NG_OPTIONS_REGEXP = /^\s*([\s\S]+?)(?:\s+as\s+([\s\S]+?))?(?:\s+group\s+by\s+([\s\S]+?))?\s+for\s+(?:([\$\w][\$\w]*)|(?:\(\s*([\$\w][\$\w]*)\s*,\s*([\$\w][\$\w]*)\s*\)))\s+in\s+([\s\S]+?)(?:\s+track\s+by\s+([\s\S]+?))?$/,
           multiple = attrs.multiple,
           optionsExp = attrs.ngOptions,
-          optionAttrs = $parse(attrs.bsOptionAttrs)(),
+          optionAttrs = $parse(attrs.bsOptionAttrs)(scope),
           nullOption,
           match = optionsExp.match(NG_OPTIONS_REGEXP),
           displayFn = $parse(match[2] || match[1]),
@@ -157,13 +157,14 @@ function selectpickerDirective($parse, $timeout) {
           var locals = {},
               newAttrs = {},
               newData = {},
-              key = keys[i];
+              key = keys[i],
+              customAttrs = typeof optionAttrs === 'function' ? optionAttrs(key, values[key]) : optionAttrs;
           
           locals = getLocals(values[key], key);
           
           if (key) {
-            for (var optionAttr in optionAttrs) {
-              var attr = optionAttrs[optionAttr],
+            for (var optionAttr in customAttrs) {
+              var attr = customAttrs[optionAttr],
                   dataAttr = optionAttr.split('data-')[1] ? optionAttr.split('data-')[1].replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); }) : null, // convert to camelCase
                   parseAttr = bindData(attr)(scope, locals);
               
