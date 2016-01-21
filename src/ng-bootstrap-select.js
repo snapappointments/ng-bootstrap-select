@@ -73,7 +73,7 @@ function selectpickerDirective($parse, $timeout) {
             index = 0,
             expressions = [],
             parseFns = [],
-            textLength = text.length,
+            textLength = text ? text.length : 0,
             exp,
             concat = [],
             startSymbol = '{{',
@@ -123,6 +123,16 @@ function selectpickerDirective($parse, $timeout) {
       }
 
       function setAttributes() {
+        var locals = {},
+            getLocals = keyName ? function(value, key) {
+              locals[keyName] = key;
+              locals[valueName] = value;
+              return locals;
+            } : function(value) {
+              locals[valueName] = value;
+              return locals;
+            };
+
         if ($.isEmptyObject(optionAttrs)) return;
 
         nullOption = false;
@@ -146,12 +156,12 @@ function selectpickerDirective($parse, $timeout) {
         element.find('option').each(function(i) {
           var locals = {},
               newAttrs = {},
-              newData = {};
+              newData = {},
+              key = keys[i];
           
-          if (keys[i]) {
-            
-            locals[valueName] = keys[i];
-            
+          locals = getLocals(values[key], key);
+          
+          if (key) {
             for (var optionAttr in optionAttrs) {
               var attr = optionAttrs[optionAttr],
                   dataAttr = optionAttr.split('data-')[1] ? optionAttr.split('data-')[1].replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); }) : null, // convert to camelCase
