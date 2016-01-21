@@ -158,11 +158,13 @@ function selectpickerDirective($parse, $timeout) {
               newAttrs = {},
               newData = {},
               key = keys[i],
-              customAttrs = typeof optionAttrs === 'function' ? optionAttrs(key, values[key]) : optionAttrs;
+              value = values[key];
           
-          locals = getLocals(values[key], key);
+          locals = getLocals(value, key);
           
           if (key) {
+            var customAttrs = typeof optionAttrs === 'function' ? optionAttrs(key, value) : optionAttrs;
+
             for (var optionAttr in customAttrs) {
               var attr = customAttrs[optionAttr],
                   dataAttr = optionAttr.split('data-')[1] ? optionAttr.split('data-')[1].replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); }) : null, // convert to camelCase
