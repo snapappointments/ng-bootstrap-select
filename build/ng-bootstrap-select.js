@@ -1,5 +1,5 @@
 /*!
- * ng-bootstrap-select v0.2.1
+ * ng-bootstrap-select v0.3.0
  *
  * Licensed under MIT
  */
@@ -64,7 +64,7 @@ function selectpickerDirective($parse, $timeout) {
           NG_OPTIONS_REGEXP = /^\s*([\s\S]+?)(?:\s+as\s+([\s\S]+?))?(?:\s+group\s+by\s+([\s\S]+?))?\s+for\s+(?:([\$\w][\$\w]*)|(?:\(\s*([\$\w][\$\w]*)\s*,\s*([\$\w][\$\w]*)\s*\)))\s+in\s+([\s\S]+?)(?:\s+track\s+by\s+([\s\S]+?))?$/,
           multiple = attrs.multiple,
           optionsExp = attrs.ngOptions,
-          optionAttrs = $parse(attrs.bsOptionAttrs)(),
+          optionAttrs = $parse(attrs.bsOptionAttrs)(scope),
           nullOption,
           match = optionsExp.match(NG_OPTIONS_REGEXP),
           displayFn = $parse(match[2] || match[1]),
@@ -79,7 +79,7 @@ function selectpickerDirective($parse, $timeout) {
             index = 0,
             expressions = [],
             parseFns = [],
-            textLength = text.length,
+            textLength = text ? text.length : 0,
             exp,
             concat = [],
             startSymbol = '{{',
@@ -129,9 +129,19 @@ function selectpickerDirective($parse, $timeout) {
       }
 
       function setAttributes() {
-        if ($.isEmptyObject(optionAttrs)) return;
+        if (typeof optionAttrs === 'object' && $.isEmptyObject(optionAttrs)) return;
 
         nullOption = false;
+
+        var locals = {},
+            getLocals = keyName ? function(value, key) {
+              locals[keyName] = key;
+              locals[valueName] = value;
+              return locals;
+            } : function(value) {
+              locals[valueName] = value;
+              return locals;
+            };
 
         // find "null" option
         for (var i = 0, children = element.find('option'), ii = children.length; i < ii; i++) {
@@ -152,14 +162,19 @@ function selectpickerDirective($parse, $timeout) {
         element.find('option').each(function(i) {
           var locals = {},
               newAttrs = {},
-              newData = {};
+              newData = {},
+              key = keys[i],
+              value = values[key];
           
-          if (keys[i]) {
-            
-            locals[valueName] = keys[i];
-            
-            for (var optionAttr in optionAttrs) {
-              var attr = optionAttrs[optionAttr],
+          locals = getLocals(value, key);
+          
+          if (key) {
+            var customAttrs = typeof optionAttrs === 'function' ? optionAttrs(key, value) : optionAttrs;
+
+            if ($.isEmptyObject(customAttrs)) return;
+
+            for (var optionAttr in customAttrs) {
+              var attr = customAttrs[optionAttr],
                   dataAttr = optionAttr.split('data-')[1] ? optionAttr.split('data-')[1].replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); }) : null, // convert to camelCase
                   parseAttr = bindData(attr)(scope, locals);
               

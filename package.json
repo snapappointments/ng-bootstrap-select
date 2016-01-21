@@ -1,6 +1,6 @@
 {
   "name": "ng-bootstrap-select",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Directive to wrap bootstrap-select",
   "devDependencies": {
     "canonical-path": "0.0.2",
