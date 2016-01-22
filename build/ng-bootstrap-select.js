@@ -1,5 +1,5 @@
 /*!
- * ng-bootstrap-select v0.3.0
+ * ng-bootstrap-select v0.3.1
  *
  * Licensed under MIT
  */
@@ -60,134 +60,137 @@ function selectpickerDirective($parse, $timeout) {
     restrict: 'A',
     priority: 1000,
     link: function (scope, element, attrs) {
-      var $async = scope.$applyAsync ? '$applyAsync' : '$evalAsync', // fall back to $evalAsync if using AngularJS v1.2.x
-          NG_OPTIONS_REGEXP = /^\s*([\s\S]+?)(?:\s+as\s+([\s\S]+?))?(?:\s+group\s+by\s+([\s\S]+?))?\s+for\s+(?:([\$\w][\$\w]*)|(?:\(\s*([\$\w][\$\w]*)\s*,\s*([\$\w][\$\w]*)\s*\)))\s+in\s+([\s\S]+?)(?:\s+track\s+by\s+([\s\S]+?))?$/,
-          multiple = attrs.multiple,
-          optionsExp = attrs.ngOptions,
-          optionAttrs = $parse(attrs.bsOptionAttrs)(scope),
-          nullOption,
-          match = optionsExp.match(NG_OPTIONS_REGEXP),
-          displayFn = $parse(match[2] || match[1]),
-          valueName = match[4] || match[6],
-          keyName = match[5],
-          collection = match[7],
-          valuesFn = $parse(collection);
+      var $async = scope.$applyAsync ? '$applyAsync' : '$evalAsync'; // fall back to $evalAsync if using AngularJS v1.2.x
 
-      function bindData(text) {
-        var startIndex,
-            endIndex,
-            index = 0,
-            expressions = [],
-            parseFns = [],
-            textLength = text ? text.length : 0,
-            exp,
-            concat = [],
-            startSymbol = '{{',
-            endSymbol = '}}',
-            startSymbolLength = startSymbol.length,
-            endSymbolLength = endSymbol.length,
-            escapedStartRegexp = new RegExp(startSymbol.replace(/./g, escape), 'g'),
-            escapedEndRegexp = new RegExp(endSymbol.replace(/./g, escape), 'g'),
-            expressionPositions = [];
-            
-        function escape(ch) {
-          return '\\\\\\' + ch;
-        }
-      
-        function unescapeText(text) {
-          return text.replace(escapedStartRegexp, startSymbol).
-            replace(escapedEndRegexp, endSymbol);
-        }
-            
-        while (index < textLength) {
-          if (((startIndex = text.indexOf(startSymbol, index)) != -1) &&
-               ((endIndex = text.indexOf(endSymbol, startIndex + startSymbolLength)) != -1)) {
-            if (index !== startIndex) {
-              concat.push(unescapeText(text.substring(index, startIndex)));
-            }
-            exp = text.substring(startIndex + startSymbolLength, endIndex);
-            expressions.push(exp);
-            index = endIndex + endSymbolLength;
-            expressionPositions.push(concat.length);
-            concat.push('');
-          } else {
-            // we did not find an interpolation, so we have to add the remainder to the separators array
-            if (index !== textLength) {
-              concat.push(unescapeText(text.substring(index)));
-            }
-            break;
-          }
-        }
-        
-        return function(context, locals) {
-          for (var i = 0, ii = expressions.length; i < ii; i++) {
-            concat[expressionPositions[i]] = $parse(expressions[i])(context, locals);
-          }
-          
-          return concat.join('');
-        }
-      }
+      if (attrs.ngOptions) {
+        var NG_OPTIONS_REGEXP = /^\s*([\s\S]+?)(?:\s+as\s+([\s\S]+?))?(?:\s+group\s+by\s+([\s\S]+?))?\s+for\s+(?:([\$\w][\$\w]*)|(?:\(\s*([\$\w][\$\w]*)\s*,\s*([\$\w][\$\w]*)\s*\)))\s+in\s+([\s\S]+?)(?:\s+track\s+by\s+([\s\S]+?))?$/,
+            multiple = attrs.multiple,
+            optionsExp = attrs.ngOptions,
+            optionAttrs = $parse(attrs.bsOptionAttrs)(scope),
+            nullOption,
+            match = optionsExp.match(NG_OPTIONS_REGEXP),
+            displayFn = $parse(match[2] || match[1]),
+            valueName = match[4] || match[6],
+            keyName = match[5],
+            collection = match[7],
+            valuesFn = $parse(collection);
 
-      function setAttributes() {
-        if (typeof optionAttrs === 'object' && $.isEmptyObject(optionAttrs)) return;
-
-        nullOption = false;
-
-        var locals = {},
-            getLocals = keyName ? function(value, key) {
-              locals[keyName] = key;
-              locals[valueName] = value;
-              return locals;
-            } : function(value) {
-              locals[valueName] = value;
-              return locals;
-            };
-
-        // find "null" option
-        for (var i = 0, children = element.find('option'), ii = children.length; i < ii; i++) {
-          if (children[i].value === '') {
-            nullOption = children.eq(i);
-            break;
-          }
-        }
-            
-        var values = valuesFn(scope) || [],
-            keys = angular.copy(keyName ? sortedKeys(values) : values);
-            
-        if (!multiple && nullOption) {
-          // insert null option if we have a placeholder, or the model is null
-          keys.unshift(null);
-        }
-        
-        element.find('option').each(function(i) {
-          var locals = {},
-              newAttrs = {},
-              newData = {},
-              key = keys[i],
-              value = values[key];
-          
-          locals = getLocals(value, key);
-          
-          if (key) {
-            var customAttrs = typeof optionAttrs === 'function' ? optionAttrs(key, value) : optionAttrs;
-
-            if ($.isEmptyObject(customAttrs)) return;
-
-            for (var optionAttr in customAttrs) {
-              var attr = customAttrs[optionAttr],
-                  dataAttr = optionAttr.split('data-')[1] ? optionAttr.split('data-')[1].replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); }) : null, // convert to camelCase
-                  parseAttr = bindData(attr)(scope, locals);
+        function bindData(text) {
+          var startIndex,
+              endIndex,
+              index = 0,
+              expressions = [],
+              parseFns = [],
+              textLength = text ? text.length : 0,
+              exp,
+              concat = [],
+              startSymbol = '{{',
+              endSymbol = '}}',
+              startSymbolLength = startSymbol.length,
+              endSymbolLength = endSymbol.length,
+              escapedStartRegexp = new RegExp(startSymbol.replace(/./g, escape), 'g'),
+              escapedEndRegexp = new RegExp(endSymbol.replace(/./g, escape), 'g'),
+              expressionPositions = [];
               
-              if (dataAttr) {  
-                newData[dataAttr] = parseAttr || attr;
-              } else {
-                newAttrs[optionAttr] = parseAttr || attr;
-              }
-            }
-
-            $(this).data(newData).attr(newAttrs);
+          function escape(ch) {
+            return '\\\\\\' + ch;
           }
-        });
+        
+          function unescapeText(text) {
+            return text.replace(escapedStartRegexp, startSymbol).
+              replace(escapedEndRegexp, endSymbol);
+          }
+              
+          while (index < textLength) {
+            if (((startIndex = text.indexOf(startSymbol, index)) != -1) &&
+                 ((endIndex = text.indexOf(endSymbol, startIndex + startSymbolLength)) != -1)) {
+              if (index !== startIndex) {
+                concat.push(unescapeText(text.substring(index, startIndex)));
+              }
+              exp = text.substring(startIndex + startSymbolLength, endIndex);
+              expressions.push(exp);
+              index = endIndex + endSymbolLength;
+              expressionPositions.push(concat.length);
+              concat.push('');
+            } else {
+              // we did not find an interpolation, so we have to add the remainder to the separators array
+              if (index !== textLength) {
+                concat.push(unescapeText(text.substring(index)));
+              }
+              break;
+            }
+          }
+          
+          return function(context, locals) {
+            for (var i = 0, ii = expressions.length; i < ii; i++) {
+              concat[expressionPositions[i]] = $parse(expressions[i])(context, locals);
+            }
+            
+            return concat.join('');
+          }
+        }
+
+        function setAttributes() {
+          if (typeof optionAttrs === 'object' && $.isEmptyObject(optionAttrs)) return;
+
+          nullOption = false;
+
+          var locals = {},
+              getLocals = keyName ? function(value, key) {
+                locals[keyName] = key;
+                locals[valueName] = value;
+                return locals;
+              } : function(value) {
+                locals[valueName] = value;
+                return locals;
+              };
+
+          // find "null" option
+          for (var i = 0, children = element.find('option'), ii = children.length; i < ii; i++) {
+            if (children[i].value === '') {
+              nullOption = children.eq(i);
+              break;
+            }
+          }
+              
+          var values = valuesFn(scope) || [],
+              keys = angular.copy(keyName ? sortedKeys(values) : values);
+              
+          if (!multiple && nullOption) {
+            // insert null option if we have a placeholder, or the model is null
+            keys.unshift(null);
+          }
+          
+          element.find('option').each(function(i) {
+            var locals = {},
+                newAttrs = {},
+                newData = {},
+                key = keys[i],
+                value = values[key];
+            
+            locals = getLocals(value, key);
+            
+            if (key) {
+              var customAttrs = typeof optionAttrs === 'function' ? optionAttrs(key, value) : optionAttrs;
+
+              if ($.isEmptyObject(customAttrs)) return;
+
+              for (var optionAttr in customAttrs) {
+                var attr = customAttrs[optionAttr],
+                    dataAttr = optionAttr.split('data-')[1] ? optionAttr.split('data-')[1].replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); }) : null, // convert to camelCase
+                    parseAttr = bindData(attr)(scope, locals);
+                
+                if (dataAttr) {  
+                  newData[dataAttr] = parseAttr || attr;
+                } else {
+                  newAttrs[optionAttr] = parseAttr || attr;
+                }
+              }
+
+              $(this).data(newData).attr(newAttrs);
+            }
+          });
+        }
       }
 
       function refresh(newVal) {
