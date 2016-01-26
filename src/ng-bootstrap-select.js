@@ -68,6 +68,14 @@ function selectpickerDirective($parse, $timeout) {
             keyName = match[5],
             collection = match[7],
             valuesFn = $parse(collection);
+
+        scope[$async](function () {
+          element.selectpicker($parse(attrs.selectpicker)());
+        });
+      } else { // fall back to $timeout for selects that don't use ng-options
+        $timeout(function () {
+          element.selectpicker($parse(attrs.selectpicker)());
+        });
       }
 
       function bindData(text) {
@@ -216,10 +224,6 @@ function selectpickerDirective($parse, $timeout) {
           });
           element.selectpicker('setStyle', val);
         });
-      });
-
-      scope[$async](function () {
-        element.selectpicker($parse(attrs.selectpicker)());
       });
 
       if (optionsExp) {
