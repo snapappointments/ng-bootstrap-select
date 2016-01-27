@@ -308,10 +308,6 @@ function selectpickerDirective($parse, $timeout) {
         });
       });
 
-      if (optionsExp) {
-        scope.$watch(collection, refresh, true);
-      }
-
       if (attrs.ngModel) {
         scope.$watch(attrs.ngModel, function(newVal, oldVal) {
           if (newVal !== oldVal) {
