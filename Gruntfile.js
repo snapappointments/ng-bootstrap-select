@@ -70,6 +70,6 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask('test', ['karma:' + env]);
-  grunt.registerTask('build', ['clean:build', 'uglify', 'copy:build', 'usebanner:js']);
+  grunt.registerTask('dist', ['clean:build', 'uglify', 'copy:build', 'usebanner:js']);
   grunt.registerTask('default', ['test']);
 };
