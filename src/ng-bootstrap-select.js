@@ -83,7 +83,8 @@ function selectpickerDirective($parse, $timeout) {
     restrict: 'A',
     priority: 1000,
     link: function (scope, element, attrs) {
-      var $async = scope.$applyAsync ? '$applyAsync' : '$evalAsync'; // fall back to $evalAsync if using AngularJS v1.2.x
+      var $async = scope.$applyAsync ? '$applyAsync' : '$evalAsync', // fall back to $evalAsync if using AngularJS v1.2.x
+          selectCollection;
 
       if (attrs.ngOptions) {
         var multiple = attrs.multiple,
@@ -94,7 +95,7 @@ function selectpickerDirective($parse, $timeout) {
             match = optionsExp.match(NG_OPTIONS_REGEXP);
         
         // The collection to watch
-        var collection = match[8];
+        selectCollection = match[8];
         // The variable name for the value of the item in the collection
         var valueName = match[5] || match[7];
         // The variable name for the key of the item in the collection
@@ -123,7 +124,7 @@ function selectpickerDirective($parse, $timeout) {
         var displayFn = $parse(match[2] || match[1]);
         var groupByFn = $parse(match[3] || '');
         var disableWhenFn = $parse(match[4] || '');
-        var valuesFn = $parse(collection);
+        var valuesFn = $parse(selectCollection);
         
         var locals = {};
         var getLocals = keyName ? function(value, key) {
@@ -134,17 +135,19 @@ function selectpickerDirective($parse, $timeout) {
           locals[valueName] = value;
           return locals;
         };
-            
-        scope.$watch(collection, refresh, true);
         
         scope[$async](function () {
           element.selectpicker($parse(attrs.selectpicker)());
         });
       } else {
+        selectCollection = attrs.selectCollection;
+
         $timeout(function () { // fall back to $timeout for selects that don't use ng-options
           element.selectpicker($parse(attrs.selectpicker)());
         });
       }
+
+      if (selectCollection) scope.$watch(selectCollection, refresh, true);
 
       function bindData(text) {
         var startIndex,
