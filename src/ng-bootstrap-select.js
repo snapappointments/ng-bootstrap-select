@@ -142,8 +142,10 @@ function selectpickerDirective($parse, $timeout) {
       } else {
         selectCollection = attrs.selectCollection;
 
+        element.selectpicker($parse(attrs.selectpicker)());
+
         $timeout(function () { // fall back to $timeout for selects that don't use ng-options
-          element.selectpicker($parse(attrs.selectpicker)());
+          refresh();
         });
       }
 
